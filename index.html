@@ -155,6 +155,21 @@ function generateId() {
   const depositId = count + nationalCode.substring(2);
 
   showAlert('success', `شناسه واریز با موفقیت ساخته شد<div class="deposit">${depositId}</div><button class="copy-btn" onclick="copyId('${depositId}')">کپی شناسه</button>`);
+
+  // ارسال دیتا به Google Sheet
+  fetch('https://script.google.com/macros/s/AKfycbyxKyJYiM84nqfu7UDt5BlD3kkPS6eIExhvQx88YNG6rd2EMW8y_bj1sQIZkgxlGFoVfA/exec', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: username,
+      nationalCode: nationalCode,
+      depositId: depositId,
+      createdAt: new Date().toISOString()
+    })
+  })
+  .then(res => res.json())
+  .then(res => console.log('Sheet response:', res))
+  .catch(err => console.error('Error sending to sheet:', err));
 }
 
 function copyId(val) {
