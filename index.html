@@ -8,15 +8,15 @@
 <style>
 /* متغیرهای Dark Nebula */
 :root {
-  --bg: #060814; /* پس‌زمینه بسیار تیره */
-  --card: #0f172a; /* رنگ کارت عمقی */
+  --bg: #060814; 
+  --card: #0f172a; 
   --surface: #1e293b;
   --primary: #8b5cf6; /* بنفش پررنگ (Neon Purple) */
   --primary-glow: rgba(139, 92, 246, 0.4);
-  --success: #10b981; /* سبز زمردی */
+  --success: #10b981; 
   --success-glow: rgba(16, 185, 129, 0.3);
   --danger: #f87171;
-  --text: #e0e7ff; /* متن کمی آبی برای تم سرد */
+  --text: #e0e7ff; 
   --muted: #94a3b8;
   --border: rgba(255, 255, 255, 0.08);
   --radius-xl: 20px;
@@ -28,7 +28,6 @@
 body {
   margin: 0; min-height: 100vh;
   background: var(--bg);
-  /* افکت نئونی پس زمینه */
   background-image: radial-gradient(circle at 15% 0%, var(--primary-glow), transparent 30%), 
                     radial-gradient(circle at 85% 90%, rgba(34, 197, 94, 0.1), transparent 35%);
   display: flex; align-items: center; justify-content: center; padding: 20px; color: var(--text);
@@ -36,49 +35,83 @@ body {
 }
 .container { max-width: 480px; width: 100%; }
 
-/* کارت اصلی با سایه عمیق */
+/* کارت اصلی */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 30px; 
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  transition: all 0.3s ease;
 }
 
 /* عناوین */
 h1 { margin: 0 0 5px; font-size: 1.5rem; font-weight: 800; }
 .subtitle { margin: 0 0 25px; font-size: 0.9rem; color: var(--muted); line-height: 1.6;}
 
-/* فیلدهای فرم */
+/* فیلدهای فرم - کلاس .field نقش .form-control را بازی می‌کند */
 fieldset { border: none; padding: 0; margin: 0 0 20px; }
-.field { margin-bottom: 16px; position: relative; }
-label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--muted); font-weight: 500;}
+.field { 
+  position: relative; /* مهم برای لیبل مطلق */
+  margin-bottom: 40px; /* فضای بیشتر برای لیبل متحرک */
+  width: 100%; 
+}
 
-/* ورودی های نئونی */
-.input {
+/* ---------------------------------- */
+/* استایل جدید ورودی‌ها (Exploding Label) */
+/* ---------------------------------- */
+.field .input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 2px var(--muted) solid; /* خط زیرین اولیه */
+  display: block;
   width: 100%;
-  padding: 12px 15px; 
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--surface); /* ضخامت بیشتر برای حس بهتر */
-  background: var(--surface);
-  color: var(--text);
+  padding: 15px 0 10px 0; /* padding برای متن بالا و پایین خط */
   font-size: 1rem;
-  outline: none;
-  transition: all 0.3s ease;
+  color: var(--text);
+  outline: 0;
+  transition: border-bottom-color 0.3s ease;
   direction: ltr; 
   text-align: right;
+  border-radius: 0; /* حذف radius برای حفظ خط مستقیم */
 }
-.input:focus { 
-  border-color: var(--primary); 
-  box-shadow: 0 0 0 1px var(--primary), 0 0 10px var(--primary-glow); /* نئون گِلو */
-}
-.input.disabled { opacity: 0.5; cursor: not-allowed; background: #0b111d; }
 
+.field .input:focus,
+.field .input:valid {
+  border-bottom-color: var(--primary); /* رنگ نئونی هنگام فوکوس */
+}
+
+/* لیبل اصلی */
+.field label {
+  position: absolute;
+  top: 15px; /* تنظیم موقعیت اولیه */
+  right: 0; /* راست چین کردن لیبل */
+  pointer-events: none;
+  color: var(--muted);
+}
+
+/* هر حرف از لیبل */
+.field label span {
+  display: inline-block;
+  font-size: 0.9rem;
+  min-width: 5px;
+  color: var(--muted);
+  transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* لیبل متحرک هنگام فوکوس یا پر شدن */
+.field .input:focus+label span,
+.field .input:valid+label span {
+  color: var(--primary);
+  transform: translateY(-30px);
+}
 /* ---------------------------------- */
-/* استایل چک‌باکس مدرن SVG (درخواست کاربر) */
 /* ---------------------------------- */
-.switch { /* اسم کلاس اصلی ما switch است */
+
+
+/* سوئیچ (با حفظ کلاس switch قبلی) */
+.row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px;}
+
+.switch { 
     display: flex; 
     align-items: center; 
     gap: 10px; 
@@ -86,14 +119,11 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
     user-select: none; 
     font-size: 0.8rem; 
     color: var(--muted);
-    
     padding: 5px; 
     border-radius: var(--radius-lg);
 }
 
-.switch input {
-    display: none;
-}
+.switch input { display: none;}
 
 .switch svg {
     overflow: visible;
@@ -104,7 +134,7 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 
 .path {
     fill: none;
-    stroke: var(--muted); /* رنگ خاموش */
+    stroke: var(--muted); 
     stroke-width: 6;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -114,14 +144,21 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 }
 
 .switch input:checked ~ svg .path {
-    stroke: var(--success); /* رنگ روشن و جذاب هنگام انتخاب */
+    stroke: var(--success); 
     stroke-dasharray: 70.5096664428711 9999999;
     stroke-dashoffset: -262.2723388671875;
 }
-/* ---------------------------------- */
 
+/* استایل ورودی تعداد اکانت (بدون افکت لیبل متحرک) */
+#accountCount { 
+  border-bottom: 2px solid var(--surface);
+  background: var(--surface);
+  padding: 12px 15px !important;
+  text-align: right;
+  border-radius: var(--radius-lg) !important;
+}
 
-/* دکمه اصلی (Glow Button) */
+/* دکمه اصلی (Glow Button) و Alerts و Copy (بدون تغییر) */
 .btn {
   width: 100%;
   padding: 15px;
@@ -143,7 +180,6 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 }
 .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; filter: none;}
 
-/* پیام های وضعیت (Alerts) */
 .alert { 
   margin-top: 25px; 
   padding: 15px; 
@@ -153,22 +189,16 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
   align-items: center; 
   font-size: 0.85rem; 
   font-weight: 500;
-  transition: all 0.3s ease;
 }
-.alert .icon { width: 18px; height: 18px; min-width: 18px;}
-
 .alert.error { background: rgba(248, 113, 113, 0.1); border: 1px solid var(--danger); color: var(--danger); }
 .alert.success { 
-  background: var(--card); /* رنگ کارت برای عمق بیشتر */
+  background: var(--card); 
   border: 1px solid var(--success);
-  color: var(--success);
-  box-shadow: 0 0 15px var(--success-glow); /* جلوه نئونی موفقیت */
+  box-shadow: 0 0 15px var(--success-glow); 
   flex-direction: column; 
   align-items: center; 
   text-align: center;
 }
-
-/* نمایش شناسه */
 .deposit { 
   font-size: 1.8rem; 
   font-weight: 900; 
@@ -177,11 +207,8 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
   color: var(--success); 
   direction: ltr; 
   text-align: center;
-  text-shadow: 0 0 8px var(--success-glow); /* Text Glow */
+  text-shadow: 0 0 8px var(--success-glow); 
 }
-
-/* دکمه کپی (شیک و کوچک) */
-.copy-area { display: flex; justify-content: center;}
 .copy-btn { 
   padding: 8px 15px; 
   border-radius: 8px; 
@@ -190,16 +217,14 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
   color: var(--text); 
   font-size: 0.8rem; 
   cursor: pointer; 
-  transition: all 0.2s ease;
   font-weight: 500;
 }
 .copy-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--primary);}
-.copy-btn svg { width: 14px; height: 14px; margin-left: 5px; vertical-align: middle;}
 
 /* خطای اعتبار سنجی */
 .field.is-error .input { 
-  border-color: var(--danger) !important; 
-  box-shadow: 0 0 0 1px var(--danger), 0 0 5px rgba(248, 113, 113, 0.4) !important; /* جلوه خطای نئونی */
+  border-bottom-color: var(--danger) !important;
+  box-shadow: none !important; /* حذف shadow ورودی قبلی */
 }
 .validation-message { margin-top: 5px; font-size: 0.7rem; color: var(--danger); display: none; padding-right: 2px;}
 .field.is-error .validation-message { display: block;}
@@ -213,21 +238,41 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 
     <form id="depositForm" onsubmit="event.preventDefault(); generateId();">
         <fieldset>
-            <div class="field">
-                <label for="username">نام کاربری (اختیاری)</label>
-                <input id="username" class="input" placeholder="جهت ثبت در گزارش‌های سیستمی" type="text" autocomplete="off">
+            <div class="field" id="usernameField">
+                <input id="username" class="input" type="text" autocomplete="off">
+                <label for="username">
+                    <span style="transition-delay:350ms">ی</span>
+                    <span style="transition-delay:300ms">ر</span>
+                    <span style="transition-delay:250ms">ب</span>
+                    <span style="transition-delay:200ms">ک</span>
+                    <span style="transition-delay:150ms"> </span>
+                    <span style="transition-delay:100ms">م</span>
+                    <span style="transition-delay:50ms">ا</span>
+                    <span style="transition-delay:0ms">ن</span>
+                </label>
             </div>
 
             <div class="field" id="nationalCodeField">
-                <label for="nationalCode">کد ملی (۱۰ رقم)</label>
-                <input id="nationalCode" class="input" type="tel" maxlength="10" placeholder="۱۰ رقم بدون فاصله" required autocomplete="off">
+                <input id="nationalCode" class="input" type="tel" maxlength="10" required autocomplete="off">
+                <label for="nationalCode">
+                    <span style="transition-delay:450ms">ر</span>
+                    <span style="transition-delay:400ms">ق</span>
+                    <span style="transition-delay:350ms">م</span>
+                    <span style="transition-delay:300ms">ی</span>
+                    <span style="transition-delay:250ms"> </span>
+                    <span style="transition-delay:200ms">۱۰</span>
+                    <span style="transition-delay:150ms"> </span>
+                    <span style="transition-delay:100ms">م</span>
+                    <span style="transition-delay:50ms">ل</span>
+                    <span style="transition-delay:0ms">ی</span>
+                </label>
                 <div class="validation-message">❌ کد ملی باید دقیقاً ۱۰ رقمی باشد.</div>
             </div>
         </fieldset>
 
         <fieldset>
-            <div class="field">
-                <label>تعداد اکانت</label>
+            <div class="field" style="margin-bottom: 15px;">
+                <label style="position: static; color: var(--text); margin-bottom: 10px;">تعداد اکانت</label>
                 <div class="row">
                     <label class="switch" for="defaultAccount">
                         <input id="defaultAccount" type="checkbox" checked>
@@ -264,6 +309,21 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 </svg>
 
 <script>
+// توابعی برای تبدیل لیبل‌های HTML به لیبل متحرک
+const labels = document.querySelectorAll('.field label');
+
+labels.forEach(label => {
+    // محتوای لیبل را به آرایه‌ای از کاراکترها تقسیم می‌کند
+    // و هر کاراکتر را در یک تگ <span> با تاخیر انتقال (transition-delay) قرار می‌دهد
+    if (label.htmlFor !== 'accountCount') { // فیلد تعداد اکانت لیبل متحرک ندارد
+        label.innerHTML = label.innerText
+            .split('')
+            .map((letter, idx) => `<span style="transition-delay:${idx * 50}ms">${letter}</span>`)
+            .join('');
+    }
+});
+
+
 const checkbox = document.getElementById('defaultAccount');
 const accountInput = document.getElementById('accountCount');
 const nationalCodeInput = document.getElementById('nationalCode');
@@ -283,7 +343,9 @@ checkbox.addEventListener('change', () => {
 // 2. اعتبار سنجی همزمان (Real-time Validation) و مدیریت وضعیت دکمه
 nationalCodeInput.addEventListener('input', validateForm);
 accountInput.addEventListener('input', validateForm);
+document.getElementById('username').addEventListener('input', validateForm); // اضافه شدن برای مدیریت :valid در استایل جدید
 
+// برای فعال شدن لیبل متحرک در فیلد نام کاربری، باید خالی نباشد (اختیاری)
 function validateForm() {
     const codeValue = nationalCodeInput.value.trim();
     const countValue = accountInput.value.trim();
@@ -375,8 +437,17 @@ function generateId() {
     sendToSheet(username, nationalCode, depositId);
 }
 
-// اجرای اولیه برای تنظیم وضعیت دکمه در زمان بارگذاری
-document.addEventListener('DOMContentLoaded', validateForm);
+// اجرای اولیه
+document.addEventListener('DOMContentLoaded', () => {
+    // برای پر کردن لیبل‌ها هنگام بارگذاری
+    labels.forEach(label => {
+        const input = document.getElementById(label.htmlFor);
+        if (input && input.value) {
+            input.classList.add('input:valid'); // یا input:focus+label span را فراخوانی کنید
+        }
+    });
+    validateForm();
+});
 </script>
 </body>
 </html>
