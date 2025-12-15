@@ -22,21 +22,27 @@
   --radius-xl: 20px;
   --radius-lg: 15px; 
   
-  /* رنگ‌های نئومورفیک برای حالت Dark */
+  /* رنگ‌های نئومورفیک */
   --neum-dark-shadow: #04050e; 
   --neum-light-shadow: #141b31; 
 
-  /* رنگ‌های لودینگ هماهنگ با تم */
-  --loading-color-1: var(--primary); /* بنفش اصلی */
-  --loading-color-2: #6d28d9; /* بنفش تیره */
-  --loading-color-3: #a78bfa; /* بنفش روشن */
-  --loading-color-4: var(--card); /* رنگ پس زمینه کارت */
+  /* رنگ‌های لودینگ */
+  --loading-color-1: var(--primary); 
+  --loading-color-2: #6d28d9; 
+  --loading-color-3: #a78bfa; 
+  --loading-color-4: var(--card); 
 }
 
 /* استایل عمومی و زمینه */
-* { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
+* { 
+    box-sizing: border-box; 
+    font-family: 'Vazirmatn', sans-serif; 
+    /* تنظیمات ریست پایه */
+    padding: 0;
+    margin: 0;
+}
 body {
-  margin: 0; min-height: 100vh;
+  min-height: 100vh;
   background: var(--bg);
   background-image: radial-gradient(circle at 15% 0%, var(--primary-glow), transparent 30%), 
                     radial-gradient(circle at 85% 90%, rgba(34, 197, 94, 0.1), transparent 35%);
@@ -45,6 +51,7 @@ body {
 }
 .container { max-width: 480px; width: 100%; }
 .card {
+  position: relative; /* برای لودینگ اورلی */
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -62,7 +69,7 @@ fieldset { border: none; padding: 0; margin: 0 0 20px; }
 label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--muted); font-weight: 500;}
 
 /* ---------------------------------- */
-/* استایل ورودی‌ها (Neumorphism) - کاملاً صحیح */
+/* استایل ورودی‌ها (Neumorphism) */
 /* ---------------------------------- */
 .field .input {
     border: none; outline: none; border-radius: var(--radius-lg);
@@ -89,37 +96,56 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 }
 
 /* ---------------------------------- */
-/* دکمه اصلی (Glow Button) - کاملاً صحیح */
+/* استایل چک‌باکس مدرن SVG */
+/* ---------------------------------- */
+.row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px;}
+
+.switch { 
+    display: flex; align-items: center; gap: 10px; cursor: pointer; 
+    user-select: none; font-size: 0.8rem; color: var(--muted);
+    padding: 5px; border-radius: var(--radius-lg);
+}
+.switch input { display: none;}
+.switch svg { overflow: visible; width: 24px; height: 24px; margin-left: 5px; }
+
+/* مسیر داخل چک باکس */
+.path {
+    fill: none; stroke: var(--muted); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;
+    transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+    stroke-dasharray: 241 9999999; stroke-dashoffset: 0;
+}
+.switch input:checked ~ svg .path {
+    stroke: var(--success); 
+    stroke-dasharray: 70.5096664428711 9999999;
+    stroke-dashoffset: -262.2723388671875;
+}
+
+/* ---------------------------------- */
+/* دکمه اصلی، لودینگ، کپی */
 /* ---------------------------------- */
 .btn {
   width: 100%; padding: 15px; border-radius: var(--radius-lg); border: none; background: var(--primary);
   color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 25px; transition: all 0.3s ease;
   box-shadow: 0 5px 20px var(--primary-glow);
 }
-.btn:hover { 
-  transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px var(--primary); 
-  filter: brightness(1.1);
-}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px var(--primary); filter: brightness(1.1); }
 .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; filter: none;}
 
-
-/* ---------------------------------- */
-/* لودینگ سه‌بعدی (3D Boxes) - حفظ شده */
-/* ---------------------------------- */
+/* لودینگ اورلی */
 #loadingOverlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(6, 8, 20, 0.9); border-radius: var(--radius-xl);
+    background: rgba(6, 8, 20, 0.95); border-radius: var(--radius-xl);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     z-index: 10; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 #loadingOverlay.active { opacity: 1; visibility: visible; }
 .loading-text { color: var(--primary); margin-top: 10px; font-size: 0.9rem; }
+
+/* Box Loading Animation */
 .boxes {
-    --size: 24px; --duration: 800ms;
-    height: calc(var(--size) * 2); width: calc(var(--size) * 3);
+    --size: 24px; --duration: 800ms; height: calc(var(--size) * 2); width: calc(var(--size) * 3);
     position: relative; transform-style: preserve-3d; transform-origin: 50% 50%;
-    margin-top: calc(var(--size) * 1.5 * -1);
-    transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
+    margin-top: calc(var(--size) * 1.5 * -1); transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
 }
 .boxes .box { width: var(--size); height: var(--size); top: 0; left: 0; position: absolute; transform-style: preserve-3d; }
 .boxes .box:nth-child(1) { transform: translate(100%, 0); animation: box1 var(--duration) linear infinite; }
@@ -129,52 +155,47 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 .boxes .box > div {
     --background: var(--loading-color-1); --top: auto; --right: auto; --bottom: auto; --left: auto;
     --translateZ: calc(var(--size) / 2); --rotateY: 0deg; --rotateX: 0deg;
-    position: absolute; width: 100%; height: 100%;
-    background: var(--background); top: var(--top); right: var(--right); bottom: var(--bottom); left: var(--left);
+    position: absolute; width: 100%; height: 100%; background: var(--background);
+    top: var(--top); right: var(--right); bottom: var(--bottom); left: var(--left);
     transform: rotateY(var(--rotateY)) rotateX(var(--rotateX)) translateZ(var(--translateZ));
 }
 .boxes .box > div:nth-child(1) { --top: 0; --left: 0; }
 .boxes .box > div:nth-child(2) { --background: var(--loading-color-2); --right: 0; --rotateY: 90deg; }
 .boxes .box > div:nth-child(3) { --background: var(--loading-color-3); --rotateX: -90deg; }
 .boxes .box > div:nth-child(4) { --background: var(--loading-color-4); --top: 0; --left: 0; --translateZ: calc(var(--size) * 3 * -1); }
+
 @keyframes box1 { 0%, 50% { transform: translate(100%, 0); } 100% { transform: translate(200%, 0); } }
 @keyframes box2 { 0% { transform: translate(0, 100%); } 50% { transform: translate(0, 0); } 100% { transform: translate(100%, 0); } }
 @keyframes box3 { 0%, 50% { transform: translate(100%, 100%); } 100% { transform: translate(0, 100%); } }
 @keyframes box4 { 0% { transform: translate(200%, 0); } 50% { transform: translate(200%, 100%); } 100% { transform: translate(100%, 100%); } }
 
-/* ---------------------------------- */
-/* دکمه کپی اصلاح شده و شیک */
-/* ---------------------------------- */
-.copy-area { display: flex; justify-content: center; margin-top: 15px; }
-.copy-btn { 
-  padding: 8px 15px; 
-  border-radius: 8px; 
-  border: 1px solid var(--success); 
-  background: none; 
-  color: var(--success); 
-  font-size: 0.85rem; 
-  cursor: pointer; 
-  transition: all 0.2s ease;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-}
-.copy-btn:hover { background: rgba(16, 185, 129, 0.1); }
-.copy-btn svg { 
-    width: 16px; /* اندازه کوچک و استاندارد */ 
-    height: 16px; 
-    margin-right: 5px; 
-    fill: var(--success);
-    transition: none; /* جلوگیری از تغییر اندازه ناخواسته */
-}
 
-/* بقیه استایل ها */
-.validation-message { margin-top: 5px; font-size: 0.7rem; color: var(--danger); display: none; padding-right: 2px;}
-.field.is-error .validation-message { display: block;}
+/* پیام ها و شناسه واریز */
+.alert { 
+  margin-top: 25px; padding: 15px; border-radius: var(--radius-lg); display: flex; 
+  gap: 10px; align-items: center; font-size: 0.85rem; font-weight: 500;
+}
+.alert.error { background: rgba(248, 113, 113, 0.1); border: 1px solid var(--danger); color: var(--danger); }
+.alert.success { 
+  background: var(--card); border: 1px solid var(--success); box-shadow: 0 0 15px var(--success-glow); 
+  flex-direction: column; align-items: center; text-align: center;
+}
 .deposit { 
   font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; margin: 10px 0 10px; 
   color: var(--success); direction: ltr; text-align: center; text-shadow: 0 0 8px var(--success-glow); 
 }
+.copy-area { display: flex; justify-content: center; margin-top: 15px; }
+.copy-btn { 
+  padding: 8px 15px; border-radius: 8px; border: 1px solid var(--success); 
+  background: none; color: var(--success); font-size: 0.85rem; cursor: pointer; 
+  transition: all 0.2s ease; font-weight: 500; display: flex; align-items: center;
+}
+.copy-btn:hover { background: rgba(16, 185, 129, 0.1); }
+.copy-btn svg { width: 16px; height: 16px; margin-right: 5px; fill: currentColor;} 
+
+/* خطای اعتبار سنجی */
+.validation-message { margin-top: 5px; font-size: 0.7rem; color: var(--danger); display: none; padding-right: 2px;}
+.field.is-error .validation-message { display: block;}
 </style>
 </head>
 <body>
@@ -190,26 +211,26 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
         <div class="loading-text">در حال تولید و ثبت شناسه...</div>
     </div>
 
-    <h1>تولید شناسه واریز</h1>
-    <p class="subtitle">سیستم پیشرفته تولید و ثبت شناسه مالی. اطلاعات ضروری را وارد کنید.</p>
+    <h1>ابزار ایجاد شناسه واریز</h1>
+    <p class="subtitle">برای ایجاد دستی شناسه واریز برای کاربر، اطلاعات زیر را تکمیل کنید.</p>
 
     <form id="depositForm" onsubmit="event.preventDefault(); generateId();">
         <fieldset>
             <div class="field" id="usernameField">
                 <label for="username">نام کاربری</label>
-                <input id="username" class="input" type="text" autocomplete="off" name="username_input" placeholder="جهت ثبت در گزارش‌های سیستمی">
+                <input id="username" class="input" type="text" autocomplete="off" name="username_input" placeholder="نام کاربری کاربر را وارد کنید">
             </div>
 
             <div class="field" id="nationalCodeField">
                 <label for="nationalCode">کد ملی</label>
-                <input id="nationalCode" class="input" type="tel" maxlength="10" required autocomplete="off" name="nationalcode_input" placeholder="۱۰ رقم کد ملی بدون فاصله">
+                <input id="nationalCode" class="input" type="tel" maxlength="10" required autocomplete="off" name="nationalcode_input" placeholder="کدملی کاربر را وارد کنید">
                 <div class="validation-message">❌ کد ملی باید دقیقاً ۱۰ رقمی باشد.</div>
             </div>
         </fieldset>
 
         <fieldset>
             <div class="field" style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--text); font-weight: 500;">تعداد اکانت</label>
+                <label style="display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--text); font-weight: 500;">تعداد اکانت‌های کاربر با این کدملی</label>
                 <div class="row">
                     <label class="switch" for="defaultAccount">
                         <input id="defaultAccount" type="checkbox" checked>
@@ -217,16 +238,16 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
                         <svg viewBox="0 0 64 64">
                             <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" class="path"></path>
                         </svg>
-                        <span class="switch-text">یک اکانت (پیش‌فرض)</span>
+                        <span class="switch-text">پیش‌فرض (یک اکانت)</span>
                     </label>
                     
-                    <input id="accountCount" class="input disabled" type="tel" value="1" min="1" disabled aria-label="تعداد اکانت">
+                    <input id="accountCount" class="input disabled" type="tel" value="1" min="1" disabled aria-label="تعداد اکانت‌های کاربر با این کدملی">
                 </div>
             </div>
         </fieldset>
         
         <button type="submit" id="generateBtn" class="btn" disabled>
-            ساخت شناسه و ثبت خودکار
+            ایجاد شناسه واریز
         </button>
     </form>
 
@@ -285,14 +306,14 @@ function validateForm() {
     return isFormValid;
 }
 
-// 3. نمایش پیام‌ها (با دکمه کپی اصلاح شده)
+// 3. نمایش پیام‌ها (با دکمه کپی)
 function showAlert(type, message, depositId = null) {
     let iconId = type === 'error' ? 'icon-error' : 'icon-success';
     
     if (type === 'success' && depositId) {
         alertBox.innerHTML = `
             <div class="alert success">
-                <svg class="icon" aria-hidden="true"><use xlink:href="#icon-success"></use></svg>
+                <svg class="icon" style="width: 24px; height: 24px; fill: var(--success);" aria-hidden="true"><use xlink:href="#icon-success"></use></svg>
                 <span>شناسه واریز با موفقیت ساخته و ثبت شد.</span>
                 <div class="deposit">${depositId}</div>
                 <div class="copy-area">
@@ -305,7 +326,7 @@ function showAlert(type, message, depositId = null) {
     } else {
          alertBox.innerHTML = `
             <div class="alert ${type}">
-                <svg class="icon" aria-hidden="true"><use xlink:href="#${iconId}"></use></svg>
+                <svg class="icon" style="width: 24px; height: 24px; fill: currentColor;" aria-hidden="true"><use xlink:href="#${iconId}"></use></svg>
                 <span>${message}</span>
             </div>
         `;
@@ -316,9 +337,8 @@ function copyId(val) {
     navigator.clipboard.writeText(val);
     const copyMessage = document.createElement('div');
     copyMessage.className = 'alert success';
-    // استایل موقت برای پیام کپی شدن
     copyMessage.style.cssText = 'margin-top: 10px; padding: 8px 12px; font-size: 0.7rem; font-weight: 400; justify-content: center; border: 1px solid var(--success); box-shadow: 0 0 10px var(--success-glow);';
-    copyMessage.innerHTML = '✅ شناسه در حافظه کپی شد!';
+    copyMessage.innerHTML = '✅ شناسه واریز کپی شد!';
     alertBox.appendChild(copyMessage);
     
     setTimeout(() => {
@@ -337,7 +357,7 @@ function sendToSheet(username, nationalCode, depositId) {
     document.getElementById('gsheetForm').submit();
 }
 
-// 5. تابع اصلی تولید شناسه (با لودینگ)
+// 5. تابع اصلی تولید شناسه (با لودینگ 800 میلی‌ثانیه‌ای)
 function generateId() {
     alertBox.innerHTML = ''; 
 
@@ -349,7 +369,7 @@ function generateId() {
     // فعال کردن لودینگ
     loadingOverlay.classList.add('active');
 
-    // شبیه سازی پردازش ۱.۵ ثانیه ای
+    // شبیه سازی پردازش 0.8 ثانیه ای (تغییر یافته)
     setTimeout(() => {
         const nationalCode = nationalCodeInput.value.trim();
         const count = accountInput.value;
@@ -364,7 +384,7 @@ function generateId() {
         // غیرفعال کردن لودینگ
         loadingOverlay.classList.remove('active');
 
-    }, 1500); 
+    }, 200); // ✨ تایم لودینگ به 800 میلی‌ثانیه کاهش یافت
 }
 
 // اجرای اولیه
