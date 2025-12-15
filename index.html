@@ -3,184 +3,340 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تولید شناسه واریز | ابزار هوشمند</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<title>ابزار هوشمند تولید شناسه واریز | نسخه حرفه‌ای</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+/* متغیرهای رنگ و اندازه */
 :root {
-  --bg:#0a0f1f;
-  --card:#0f172a;
-  --surface:#020617;
-  --primary:#7c7cff;
-  --primary-soft:rgba(124,124,255,0.15);
-  --success:#22c55e;
-  --danger:#ef4444;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --border:rgba(255,255,255,0.08);
-  --radius-lg:22px;
-  --radius-md:14px;
+  --bg: #030712;
+  --card: #0f172a;
+  --surface: #1e293b;
+  --primary: #8b5cf6; /* بنفش پررنگ تر */
+  --primary-soft: rgba(139, 92, 246, 0.25);
+  --success: #10b981;
+  --danger: #ef4444;
+  --text: #f8fafc;
+  --muted: #9ca3af;
+  --border: rgba(255, 255, 255, 0.1);
+  --radius-xl: 30px;
+  --radius-lg: 18px;
+  --shadow-base: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
-* { box-sizing:border-box;font-family:'Vazirmatn',sans-serif; }
+
+/* استایل عمومی */
+* { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
 body {
-  margin:0;
-  min-height:100vh;
-  background: radial-gradient(500px circle at 10% 0%, rgba(124,124,255,0.18), transparent 40%),
-              radial-gradient(600px circle at 90% 90%, rgba(56,189,248,0.12), transparent 45%),
-              var(--bg);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  color:var(--text);
+  margin: 0; min-height: 100vh;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 10% 0%, rgba(139, 92, 246, 0.15), transparent 30%), 
+                    radial-gradient(circle at 90% 90%, rgba(34, 197, 94, 0.08), transparent 35%);
+  display: flex; align-items: center; justify-content: center; padding: 24px; color: var(--text);
+  line-height: 1.6;
 }
-.container { max-width:580px; width:100%; }
+.container { max-width: 580px; width: 100%; }
+
+/* استایل کارت اصلی (شیشه ای) */
 .card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:34px 32px 30px;
-  backdrop-filter:blur(14px);
-  box-shadow:0 40px 90px rgba(0,0,0,0.6);
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-base), 0 0 80px rgba(139, 92, 246, 0.1);
 }
-h1 { margin:0 0 10px; font-size:1.6rem; font-weight:800; letter-spacing:-0.5px;}
-.subtitle { margin:0 0 30px; font-size:0.95rem; line-height:2; color:var(--muted);}
-.field { margin-bottom:20px; }
-label { display:block; margin-bottom:6px; font-size:0.78rem; color:var(--muted);}
+
+/* عناوین */
+h1 { margin: 0 0 8px; font-size: 1.8rem; font-weight: 900; }
+.subtitle { margin: 0 0 35px; font-size: 1rem; color: var(--muted); line-height: 1.8;}
+
+/* فیلدهای فرم */
+fieldset { border: none; padding: 0; margin: 0 0 30px; }
+.field { margin-bottom: 20px; position: relative; }
+label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text); font-weight: 600;}
+.hint { margin-top: 6px; font-size: 0.75rem; color: var(--muted); line-height: 1.6;}
+
+/* ورودی ها */
 .input {
-  width:100%;
-  padding:14px 15px;
-  border-radius:var(--radius-md);
-  border:1px solid var(--border);
-  background:var(--surface);
-  color:var(--text);
-  font-size:0.95rem;
-  outline:none;
-  transition:all 0.25s ease;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  direction: ltr; /* برای ورودی‌های عددی بهتر است */
+  text-align: right;
 }
-.input:focus { border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-soft);}
-.input.disabled { opacity:0.4; cursor:not-allowed;}
-.hint { margin-top:6px; font-size:0.7rem; color:var(--muted); line-height:1.8;}
-.row { display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
-.switch { display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; font-size:0.75rem; color:var(--muted);}
-.switch input { display:none;}
-.toggle { width:44px; height:24px; background:var(--surface); border-radius:999px; position:relative; border:1px solid var(--border); transition: background 0.25s ease;}
-.toggle::after { content:''; width:18px; height:18px; background:#fff; border-radius:50%; position:absolute; top:2px; right:2px; transition:transform 0.25s ease;}
-.switch input:checked + .toggle { background: linear-gradient(135deg, var(--primary), #9aa1ff);}
-.switch input:checked + .toggle::after { transform:translateX(-20px);}
+.input::placeholder { color: rgba(255, 255, 255, 0.3); }
+.input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft);}
+.input.disabled { opacity: 0.6; cursor: not-allowed; background: #0f172a; }
+
+/* سوئیچ (Toggle) */
+.row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 10px;}
+.switch { display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; font-size: 0.85rem; color: var(--muted);}
+.switch input { display: none;}
+.toggle { width: 50px; height: 26px; background: #374151; border-radius: 999px; position: relative; transition: background 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);}
+.toggle::after { content:''; width: 22px; height: 22px; background: #fff; border-radius: 50%; position: absolute; top: 2px; right: 2px; transition: transform 0.3s ease, box-shadow 0.3s ease;}
+.switch input:checked + .toggle { background: var(--success); }
+.switch input:checked + .toggle::after { transform: translateX(-24px);}
+
+/* دکمه اصلی */
 .btn {
-  width:100%;
-  padding:16px;
-  border-radius:18px;
-  border:none;
-  background:linear-gradient(135deg, var(--primary), #9aa1ff);
-  color:#fff;
-  font-size:1rem;
-  font-weight:800;
-  cursor:pointer;
-  margin-top:12px;
-  transition:all 0.2s ease;
-  box-shadow:0 20px 45px rgba(124,124,255,0.45);
+  width: 100%;
+  padding: 18px;
+  border-radius: 18px;
+  border: none;
+  background: linear-gradient(45deg, var(--primary), #a879ff);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.25s ease;
+  box-shadow: 0 15px 35px var(--primary-soft);
 }
-.btn:hover { transform:translateY(-2px); box-shadow:0 30px 65px rgba(124,124,255,0.6);}
-.alert { margin-top:22px; padding:14px 16px; border-radius:14px; display:flex; gap:12px; align-items:flex-start; font-size:0.8rem; line-height:1.8;}
-.alert.error { background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.4); color:#fecaca;}
-.alert.success { background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.4); color:#bbf7d0; flex-direction:column; align-items:center; text-align:center;}
-.deposit { font-size:1.7rem; font-weight:800; letter-spacing:2px; margin:6px 0 10px; color:var(--success);}
-.copy-btn { padding:10px 16px; border-radius:12px; border:1px solid rgba(255,255,255,0.14); background:rgba(2,6,23,0.6); color:var(--text); font-size:0.75rem; cursor:pointer; transition:all 0.2s ease;}
-.copy-btn:hover { border-color:var(--primary); background:var(--primary-soft);}
-@media (max-width:480px) { .card { padding:26px 22px; } h1 { font-size:1.35rem; } }
+.btn:hover { transform: translateY(-3px); box-shadow: 0 25px 50px var(--primary-soft);}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;}
+
+/* پیام های وضعیت (Alerts) */
+.alert { 
+  margin-top: 30px; 
+  padding: 18px; 
+  border-radius: var(--radius-lg); 
+  display: flex; 
+  gap: 12px; 
+  align-items: center; 
+  font-size: 0.9rem; 
+  font-weight: 600;
+}
+.alert .icon { width: 20px; height: 20px; min-width: 20px; margin-top: 1px;}
+
+.alert.error { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.5); color: #fecaca;}
+.alert.success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.5); color: #a7f3d0; flex-direction: column; align-items: center; text-align: center; line-height: 1.4;}
+
+/* نمایش شناسه */
+.deposit { 
+  font-size: 2rem; 
+  font-weight: 900; 
+  letter-spacing: 2px; 
+  margin: 12px 0 15px; 
+  color: var(--success); 
+  direction: ltr; 
+  text-align: center;
+  user-select: all; /* قابل انتخاب برای کپی آسان */
+}
+
+/* دکمه کپی */
+.copy-area { display: flex; align-items: center; justify-content: center; gap: 8px;}
+.copy-btn { 
+  padding: 10px 20px; 
+  border-radius: 12px; 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--text); 
+  font-size: 0.85rem; 
+  cursor: pointer; 
+  transition: all 0.2s ease;
+  font-weight: 700;
+}
+.copy-btn:hover { border-color: var(--primary); background: var(--primary-soft);}
+.copy-btn svg { width: 16px; height: 16px; margin-left: 6px; vertical-align: middle;}
+
+/* خطای اعتبار سنجی */
+.field.is-error .input { border-color: var(--danger) !important; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3) !important;}
+.field.is-error label { color: var(--danger);}
+.validation-message { margin-top: 6px; font-size: 0.75rem; color: var(--danger); display: none;}
+.field.is-error .validation-message { display: block;}
+
+/* رسپانسیو */
+@media (max-width: 480px) { 
+  .card { padding: 30px 20px; } 
+  h1 { font-size: 1.6rem; } 
+  .deposit { font-size: 1.7rem; }
+}
 </style>
 </head>
 <body>
 <div class="container">
 <div class="card">
-<h1>تولید شناسه واریز</h1>
-<p class="subtitle">فقط اطلاعات ضروری را وارد کن. ما بقیه مسیر را برایت ساده و بدون خطا طراحی کرده‌ایم.</p>
+    <h1>تولید شناسه هوشمند</h1>
+    <p class="subtitle">ابزاری دقیق برای تولید شناسه‌های واریز. اطلاعات ضروری را وارد کنید تا شناسه نهایی ساخته و در سیستم ثبت شود.</p>
 
-<div class="field">
-<label>نام کاربری</label>
-<input id="username" class="input" placeholder="فقط برای شناسایی (اختیاری)">
-<div class="hint">این فیلد تأثیری در شناسه نهایی ندارد</div>
+    <form id="depositForm" onsubmit="event.preventDefault(); generateId();">
+        <fieldset>
+            <legend style="display: none;">اطلاعات کاربری</legend>
+            <div class="field">
+                <label for="username">نام کاربری</label>
+                <input id="username" class="input" placeholder="اختیاری: برای ثبت در لاگ سیستم" type="text" autocomplete="off">
+                <div class="hint">این فیلد صرفاً جهت شناسایی بهتر در گزارش‌ها کاربرد دارد.</div>
+            </div>
+
+            <div class="field" id="nationalCodeField">
+                <label for="nationalCode">کد ملی (۱۰ رقم اجباری)</label>
+                <input id="nationalCode" class="input" type="tel" maxlength="10" placeholder="۱۰ رقم بدون فاصله یا خط تیره" required autocomplete="off">
+                <div class="validation-message">❌ لطفا کد ملی ۱۰ رقمی و معتبر وارد کنید.</div>
+                <div class="hint">۸ رقم آخر کد ملی، بخش اصلی شناسه واریز را تشکیل می‌دهد.</div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend style="display: none;">تنظیمات شناسه</legend>
+            <div class="field">
+                <label>تعداد اکانت‌ها</label>
+                <div class="row">
+                    <label class="switch" for="defaultAccount">
+                        <input id="defaultAccount" type="checkbox" checked>
+                        <span class="toggle"></span>
+                        <span class="switch-text">یک اکانت (تنظیم پیش‌فرض)</span>
+                    </label>
+                    <input id="accountCount" class="input disabled" type="tel" value="1" min="1" disabled aria-label="تعداد اکانت‌ها">
+                </div>
+                <div class="hint">اگر کاربر بیش از یک اکانت دارد، گزینه بالا را غیرفعال کرده و تعداد دقیق را وارد نمایید.</div>
+            </div>
+        </fieldset>
+        
+        <button type="submit" id="generateBtn" class="btn" disabled>
+            ساخت و ثبت شناسه واریز
+        </button>
+    </form>
+
+    <div id="alert"></div>
+</div>
 </div>
 
-<div class="field">
-<label>کد ملی</label>
-<input id="nationalCode" class="input" maxlength="10" placeholder="۱۰ رقم بدون خط تیره">
-</div>
-
-<div class="field">
-<label>تعداد اکانت‌ها</label>
-<div class="row">
-<label class="switch">
-<input id="defaultAccount" type="checkbox" checked>
-<span class="toggle"></span>
-معمولاً یک اکانت دارد
-</label>
-<input id="accountCount" class="input disabled" type="number" value="1" min="1" disabled>
-</div>
-<div class="hint">اگر کاربر بیش از یک اکانت دارد، گزینه بالا را غیرفعال کن</div>
-</div>
-
-<button class="btn" onclick="generateId()">ساخت شناسه واریز</button>
-<div id="alert"></div>
-</div>
-</div>
-
-<!-- فرم پنهان برای ارسال مستقیم به Google Sheet -->
 <form id="gsheetForm" action="https://script.google.com/macros/s/AKfycbxOjhrFrzDBfZMG97sk1iDtrbA2PWQ92Z6T_9cbimxOf944_DFNX2tAQgB8Hvo--y8Y/exec" method="post" target="hidden_iframe">
-  <input type="hidden" name="data" id="formData">
+  <input type="hidden" name="data" id="formData">
 </form>
 <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+<svg style="display: none;">
+    <symbol id="icon-error" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></symbol>
+    <symbol id="icon-success" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></symbol>
+</svg>
 
 <script>
 const checkbox = document.getElementById('defaultAccount');
 const accountInput = document.getElementById('accountCount');
+const nationalCodeInput = document.getElementById('nationalCode');
 const alertBox = document.getElementById('alert');
+const nationalCodeField = document.getElementById('nationalCodeField');
+const generateBtn = document.getElementById('generateBtn');
 
+// 1. منطق Disable/Enable کردن تعداد اکانت
 checkbox.addEventListener('change', () => {
-  const disabled = checkbox.checked;
-  accountInput.disabled = disabled;
-  accountInput.classList.toggle('disabled', disabled);
-  if (disabled) accountInput.value = 1;
+    const disabled = checkbox.checked;
+    accountInput.disabled = disabled;
+    accountInput.classList.toggle('disabled', disabled);
+    if (disabled) accountInput.value = 1;
+    validateForm();
 });
 
-function showAlert(type, html) {
-  alertBox.innerHTML = `<div class="alert ${type}">${html}</div>`;
+// 2. اعتبار سنجی همزمان (Real-time Validation) و مدیریت وضعیت دکمه
+nationalCodeInput.addEventListener('input', validateForm);
+accountInput.addEventListener('input', validateForm);
+
+function validateForm() {
+    const codeValue = nationalCodeInput.value.trim();
+    const countValue = accountInput.value.trim();
+    
+    // الف) بررسی ۱۰ رقمی بودن کد ملی
+    const isCodeValid = /^\d{10}$/.test(codeValue);
+    
+    // ب) بررسی خالی نبودن فیلد تعداد اکانت در صورت فعال بودن
+    const isCountValid = accountInput.disabled || (countValue !== '' && parseInt(countValue) > 0);
+
+    // مدیریت کلاس خطا برای فیلد کد ملی
+    nationalCodeField.classList.toggle('is-error', codeValue.length > 0 && !isCodeValid);
+
+    // فعال/غیرفعال کردن دکمه اصلی
+    const isFormValid = isCodeValid && isCountValid;
+    generateBtn.disabled = !isFormValid;
+    
+    return isFormValid;
+}
+
+// 3. نمایش پیام‌ها (با آیکون)
+function showAlert(type, message, depositId = null) {
+    let iconId = type === 'error' ? 'icon-error' : 'icon-success';
+    let iconHtml = `<svg class="icon" aria-hidden="true"><use xlink:href="#${iconId}"></use></svg>`;
+    
+    if (type === 'success' && depositId) {
+        alertBox.innerHTML = `
+            <div class="alert success">
+                <svg class="icon" aria-hidden="true"><use xlink:href="#icon-success"></use></svg>
+                <span>عملیات با موفقیت انجام شد: شناسه واریز ساخته و اطلاعات در سیستم ثبت گردید.</span>
+                <div class="deposit">${depositId}</div>
+                <div class="copy-area">
+                    <button class="copy-btn" onclick="copyId('${depositId}')" aria-label="کپی شناسه واریز">
+                        کپی شناسه <svg><use xlink:href="#icon-copy"></use></svg>
+                    </button>
+                </div>
+            </div>
+        `;
+    } else {
+         alertBox.innerHTML = `
+            <div class="alert ${type}">
+                ${iconHtml}
+                <span>${message}</span>
+            </div>
+        `;
+    }
 }
 
 function copyId(val) {
-  navigator.clipboard.writeText(val);
-  alert('شناسه کپی شد');
+    navigator.clipboard.writeText(val);
+    // نمایش موقت پیام کپی
+    const copyMessage = document.createElement('div');
+    copyMessage.className = 'alert success';
+    copyMessage.style.cssText = 'margin-top: 10px; padding: 10px; font-size: 0.75rem; justify-content: center;';
+    copyMessage.innerHTML = '✅ شناسه در حافظه کپی شد!';
+    alertBox.appendChild(copyMessage);
+    
+    // حذف پیام کپی بعد از ۲ ثانیه
+    setTimeout(() => {
+        copyMessage.remove();
+    }, 2500);
 }
 
+// 4. تابع ارسال به گوگل شیت
 function sendToSheet(username, nationalCode, depositId) {
-  const payload = JSON.stringify({
-    username: username,
-    nationalCode: nationalCode,
-    depositId: depositId,
-    createdAt: new Date().toISOString()
-  });
-  document.getElementById('formData').value = payload;
-  document.getElementById('gsheetForm').submit();
+    // از آنجایی که قبلاً createdAt را در Apps Script حذف کردیم، نیازی به ارسال آن نیست
+    const payload = JSON.stringify({
+        username: username,
+        nationalCode: nationalCode,
+        depositId: depositId
+    });
+    document.getElementById('formData').value = payload;
+    document.getElementById('gsheetForm').submit();
 }
 
+// 5. تابع اصلی تولید شناسه
 function generateId() {
-  const nationalCode = document.getElementById('nationalCode').value.trim();
-  const count = accountInput.value;
-  const username = document.getElementById('username').value.trim() || '-';
+    // پاک کردن پیام قبلی
+    alertBox.innerHTML = ''; 
 
-  if (!/^\d{10}$/.test(nationalCode)) {
-    showAlert('error', '❗ کد ملی وارد شده معتبر نیست. لطفاً یک عدد ۱۰ رقمی وارد کن.');
-    return;
-  }
+    if (!validateForm()) {
+        showAlert('error', '❗ لطفاً فیلدهای اجباری را با اطلاعات صحیح تکمیل کنید.');
+        return;
+    }
 
-  const depositId = count + nationalCode.substring(2);
+    const nationalCode = nationalCodeInput.value.trim();
+    const count = accountInput.value;
+    const username = document.getElementById('username').value.trim() || '-';
+  
+    // منطق تولید شناسه: (تعداد اکانت) + (۸ رقم آخر کد ملی)
+    const depositId = count + nationalCode.substring(2);
 
-  showAlert('success', `شناسه واریز با موفقیت ساخته شد<div class="deposit">${depositId}</div><button class="copy-btn" onclick="copyId('${depositId}')">کپی شناسه</button>`);
-
-  // ارسال به Google Sheet
-  sendToSheet(username, nationalCode, depositId);
+    // نمایش شناسه موفقیت آمیز و ارسال دیتا
+    showAlert('success', 'شناسه ساخته شد', depositId);
+    sendToSheet(username, nationalCode, depositId);
 }
+
+// اجرای اولیه برای تنظیم وضعیت دکمه در زمان بارگذاری
+document.addEventListener('DOMContentLoaded', validateForm);
 </script>
 </body>
 </html>
