@@ -11,7 +11,7 @@
   --bg: #060814; 
   --card: #0f172a; 
   --surface: #1e293b;
-  --primary: #8b5cf6; /* بنفش پررنگ (Neon Purple) */
+  --primary: #8b5cf6; 
   --primary-glow: rgba(139, 92, 246, 0.4);
   --success: #10b981; 
   --success-glow: rgba(16, 185, 129, 0.3);
@@ -20,7 +20,11 @@
   --muted: #94a3b8;
   --border: rgba(255, 255, 255, 0.08);
   --radius-xl: 20px;
-  --radius-lg: 10px;
+  --radius-lg: 15px; /* کمی بزرگتر برای نئومورفیسم */
+  
+  /* رنگ‌های نئومورفیک برای حالت Dark */
+  --neum-dark-shadow: #04050e; /* Shadow تیره تر از bg */
+  --neum-light-shadow: #141b31; /* Shadow روشن تر از card */
 }
 
 /* استایل عمومی و زمینه */
@@ -50,84 +54,60 @@ h1 { margin: 0 0 5px; font-size: 1.5rem; font-weight: 800; }
 
 /* فیلدهای فرم */
 fieldset { border: none; padding: 0; margin: 0 0 20px; }
-/* کلاس .field نقش .input-group را بازی می‌کند */
 .field { 
     position: relative; 
-    margin-bottom: 30px; /* فضای کافی برای لیبل شناور */
+    margin-bottom: 25px; 
     width: 100%; 
 }
+label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--muted); font-weight: 500;}
 
 /* ---------------------------------- */
-/* استایل جدید ورودی‌ها (Floating Label) */
+/* استایل جدید ورودی‌ها (Neumorphism) */
 /* ---------------------------------- */
 .field .input {
-  /* تنظیمات Floating Label */
-  border: solid 1.5px var(--muted); 
-  border-radius: var(--radius-lg); 
-  background: var(--surface);
-  padding: 1rem; 
-  font-size: 1rem;
-  color: var(--text);
-  transition: border 150ms cubic-bezier(0.4,0,0.2,1);
-  
-  /* تنظیمات RTL */
-  width: 100%;
-  display: block;
-  text-align: right;
-  direction: ltr; 
-}
-
-.user-label {
-  /* تنظیمات Floating Label */
-  position: absolute;
-  right: 15px; /* به جای Left از Right استفاده شد */
-  color: var(--muted);
-  pointer-events: none;
-  transform: translateY(1rem);
-  transition: 150ms cubic-bezier(0.4,0,0.2,1);
-}
-
-.field .input:focus, .field .input:valid {
-  outline: none;
-  border: 1.5px solid var(--primary);
-  box-shadow: 0 0 0 1px var(--primary-glow);
-}
-
-.field .input:focus ~ .user-label, .field .input:valid ~ .user-label {
-  transform: translateY(-50%) scale(0.8);
-  background-color: var(--card); /* رنگ پس زمینه کارت برای دیده شدن لیبل */
-  padding: 0 .5em; /* کمی پدینگ بیشتر برای فارسی */
-  color: var(--primary);
-  /* موقعیت لیبل شناور برای RTL */
-  right: 10px; 
-}
-
-/* ورودی غیرفعال شده (تعداد اکانت) */
-#accountCount {
+    /* تنظیمات اصلی نئومورفیسم */
     border: none;
-    background: #0b111d !important;
-    color: var(--muted) !important;
-    opacity: 0.8 !important;
-    cursor: not-allowed;
-    padding: 1rem !important;
-    border-radius: var(--radius-lg) !important;
+    outline: none;
+    border-radius: var(--radius-lg);
+    padding: 1em;
+    background-color: var(--card); /* رنگ زمینه ورودی */
+    box-shadow: inset 3px 3px 6px var(--neum-dark-shadow), /* Shadow تیره */
+                inset -3px -3px 6px var(--neum-light-shadow); /* Shadow روشن */
+    transition: 300ms ease-in-out;
+    width: 100%;
+    color: var(--text);
+    font-size: 1rem;
+    
+    /* تنظیمات RTL */
+    text-align: right;
+    direction: ltr; 
+}
+
+.field .input::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+    transition: opacity 300ms ease-in-out;
+}
+
+.field .input:focus {
+    /* تغییر حالت فوکوس */
+    background-color: var(--card);
+    transform: none; /* حذف scale برای جلوگیری از jitter */
+    box-shadow: 
+        10px 10px 30px var(--neum-dark-shadow), /* Shadow بیرون تیره */
+        -10px -10px 30px var(--neum-light-shadow), /* Shadow بیرون روشن */
+        0 0 10px var(--primary-glow); /* Glow نئونی برای جذابیت */
 }
 
 /* ---------------------------------- */
-/* استایل چک‌باکس مدرن SVG */
+/* استایل چک‌باکس مدرن SVG (بدون تغییر) */
 /* ---------------------------------- */
 .row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px;}
 
 .switch { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    cursor: pointer; 
-    user-select: none; 
-    font-size: 0.8rem; 
-    color: var(--muted);
-    padding: 5px; 
-    border-radius: var(--radius-lg);
+    display: flex; align-items: center; gap: 10px; cursor: pointer; 
+    user-select: none; font-size: 0.8rem; color: var(--muted);
+    padding: 5px; border-radius: var(--radius-lg);
 }
 .switch input { display: none;}
 .switch svg { overflow: visible; width: 24px; height: 24px; margin-left: 5px; }
@@ -143,25 +123,25 @@ fieldset { border: none; padding: 0; margin: 0 0 20px; }
     stroke-dashoffset: -262.2723388671875;
 }
 
+/* ورودی غیرفعال شده (تعداد اکانت) */
+#accountCount {
+    /* بازگرداندن به حالت ورودی نئومورفیک عادی */
+    box-shadow: inset 3px 3px 6px var(--neum-dark-shadow), inset -3px -3px 6px var(--neum-light-shadow);
+    background: #0b111d !important;
+    color: var(--muted) !important;
+    opacity: 0.8 !important;
+    cursor: not-allowed;
+    text-align: right !important;
+}
 
 /* دکمه اصلی (Glow Button) و Alerts و Copy (بدون تغییر) */
 .btn {
-  width: 100%;
-  padding: 15px;
-  border-radius: var(--radius-lg);
-  border: none;
-  background: var(--primary);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 25px;
-  transition: all 0.3s ease;
+  width: 100%; padding: 15px; border-radius: var(--radius-lg); border: none; background: var(--primary);
+  color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 25px; transition: all 0.3s ease;
   box-shadow: 0 5px 20px var(--primary-glow);
 }
 .btn:hover { 
-  transform: translateY(-2px); 
-  box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px var(--primary); 
+  transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px var(--primary); 
   filter: brightness(1.1);
 }
 .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; filter: none;}
@@ -182,11 +162,7 @@ fieldset { border: none; padding: 0; margin: 0 0 20px; }
 
 /* خطای اعتبار سنجی */
 .field.is-error .input { 
-  border-color: var(--danger) !important;
-  box-shadow: none !important;
-}
-.field.is-error .user-label {
-    color: var(--danger) !important;
+    box-shadow: inset 0 0 0 2px var(--danger), inset 3px 3px 6px var(--neum-dark-shadow); /* Shadow خطای داخلی */
 }
 .validation-message { margin-top: 5px; font-size: 0.7rem; color: var(--danger); display: none; padding-right: 2px;}
 .field.is-error .validation-message { display: block;}
@@ -201,13 +177,13 @@ fieldset { border: none; padding: 0; margin: 0 0 20px; }
     <form id="depositForm" onsubmit="event.preventDefault(); generateId();">
         <fieldset>
             <div class="field" id="usernameField">
-                <input id="username" class="input" type="text" autocomplete="off" name="username_input">
-                <label class="user-label" for="username">نام کاربری (اختیاری)</label>
+                <label for="username">نام کاربری</label>
+                <input id="username" class="input" type="text" autocomplete="off" name="username_input" placeholder="جهت ثبت در گزارش‌های سیستمی">
             </div>
 
             <div class="field" id="nationalCodeField">
-                <input id="nationalCode" class="input" type="tel" maxlength="10" required autocomplete="off" name="nationalcode_input">
-                <label class="user-label" for="nationalCode">کد ملی (۱۰ رقم)</label>
+                <label for="nationalCode">کد ملی</label>
+                <input id="nationalCode" class="input" type="tel" maxlength="10" required autocomplete="off" name="nationalcode_input" placeholder="۱۰ رقم کد ملی بدون فاصله">
                 <div class="validation-message">❌ کد ملی باید دقیقاً ۱۰ رقمی باشد.</div>
             </div>
         </fieldset>
@@ -251,8 +227,6 @@ fieldset { border: none; padding: 0; margin: 0 0 20px; }
 </svg>
 
 <script>
-// در این استایل نیازی به جاوااسکریپت برای لیبل نیست، چون CSS با :focus و :valid کار می‌کند
-
 const checkbox = document.getElementById('defaultAccount');
 const accountInput = document.getElementById('accountCount');
 const nationalCodeInput = document.getElementById('nationalCode');
@@ -272,7 +246,6 @@ checkbox.addEventListener('change', () => {
 // 2. اعتبار سنجی همزمان (Real-time Validation) و مدیریت وضعیت دکمه
 nationalCodeInput.addEventListener('input', validateForm);
 accountInput.addEventListener('input', validateForm);
-// نام کاربری نیازی به اعتبار سنجی ندارد اما input event را گوش می‌دهیم
 document.getElementById('username').addEventListener('input', () => {}); 
 
 function validateForm() {
