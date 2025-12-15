@@ -126,6 +126,12 @@ label { display:block; margin-bottom:6px; font-size:0.78rem; color:var(--muted);
 </div>
 </div>
 
+<!-- فرم پنهان برای ارسال مستقیم به Google Sheet -->
+<form id="gsheetForm" action="https://script.google.com/macros/s/AKfycbyxKyJYiM84nqfu7UDt5BlD3kkPS6eIExhvQx88YNG6rd2EMW8y_bj1sQIZkgxlGFoVfA/exec" method="post" target="hidden_iframe">
+  <input type="hidden" name="data" id="formData">
+</form>
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
 <script>
 const checkbox = document.getElementById('defaultAccount');
 const accountInput = document.getElementById('accountCount');
@@ -142,6 +148,22 @@ function showAlert(type, html) {
   alertBox.innerHTML = `<div class="alert ${type}">${html}</div>`;
 }
 
+function copyId(val) {
+  navigator.clipboard.writeText(val);
+  alert('شناسه کپی شد');
+}
+
+function sendToSheet(username, nationalCode, depositId) {
+  const payload = JSON.stringify({
+    username: username,
+    nationalCode: nationalCode,
+    depositId: depositId,
+    createdAt: new Date().toISOString()
+  });
+  document.getElementById('formData').value = payload;
+  document.getElementById('gsheetForm').submit();
+}
+
 function generateId() {
   const nationalCode = document.getElementById('nationalCode').value.trim();
   const count = accountInput.value;
@@ -156,25 +178,8 @@ function generateId() {
 
   showAlert('success', `شناسه واریز با موفقیت ساخته شد<div class="deposit">${depositId}</div><button class="copy-btn" onclick="copyId('${depositId}')">کپی شناسه</button>`);
 
-  // ارسال دیتا به Google Sheet
-  fetch('https://script.google.com/macros/s/AKfycbyxKyJYiM84nqfu7UDt5BlD3kkPS6eIExhvQx88YNG6rd2EMW8y_bj1sQIZkgxlGFoVfA/exec', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      username: username,
-      nationalCode: nationalCode,
-      depositId: depositId,
-      createdAt: new Date().toISOString()
-    })
-  })
-  .then(res => res.json())
-  .then(res => console.log('Sheet response:', res))
-  .catch(err => console.error('Error sending to sheet:', err));
-}
-
-function copyId(val) {
-  navigator.clipboard.writeText(val);
-  alert('شناسه کپی شد');
+  // ارسال به Google Sheet
+  sendToSheet(username, nationalCode, depositId);
 }
 </script>
 </body>
