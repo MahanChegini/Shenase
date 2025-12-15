@@ -3,118 +3,264 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ابزار تولید شناسه واریز | سامانه هوشمند</title>
+<title>ابزار تولید شناسه واریز | سامانه پیشرفته</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+/* متغیرهای Dark Nebula */
 :root {
-  --bg: #030712;
-  --card: #111827;
-  --surface: #1f2937;
-  --primary: #a855f7;
-  --primary-soft: rgba(168,85,247,0.2);
-  --success: #22c55e;
-  --danger: #ef4444;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --border: rgba(255,255,255,0.08);
-  --radius-xl: 24px;
-  --radius-lg: 12px;
-  --shadow-base: 0 10px 20px rgba(0,0,0,0.4);
+  --bg: #060814; /* پس‌زمینه بسیار تیره */
+  --card: #0f172a; /* رنگ کارت عمقی */
+  --surface: #1e293b;
+  --primary: #8b5cf6; /* بنفش پررنگ (Neon Purple) */
+  --primary-glow: rgba(139, 92, 246, 0.4);
+  --success: #10b981; /* سبز زمردی */
+  --success-glow: rgba(16, 185, 129, 0.3);
+  --danger: #f87171;
+  --text: #e0e7ff; /* متن کمی آبی برای تم سرد */
+  --muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.08);
+  --radius-xl: 20px;
+  --radius-lg: 10px;
 }
+
+/* استایل عمومی و زمینه */
 * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
 body {
-  margin:0; min-height:100vh; display:flex; justify-content:center; align-items:center;
-  background: var(--bg); color: var(--text); line-height:1.5; padding:20px;
-  background-image: radial-gradient(circle at 10% 0%, rgba(168,85,247,0.1), transparent 30%);
+  margin: 0; min-height: 100vh;
+  background: var(--bg);
+  /* افکت نئونی پس زمینه */
+  background-image: radial-gradient(circle at 15% 0%, var(--primary-glow), transparent 30%), 
+                    radial-gradient(circle at 85% 90%, rgba(34, 197, 94, 0.1), transparent 35%);
+  display: flex; align-items: center; justify-content: center; padding: 20px; color: var(--text);
+  line-height: 1.5;
 }
-.container { max-width:480px; width:100%; }
+.container { max-width: 480px; width: 100%; }
+
+/* کارت اصلی با سایه عمیق */
 .card {
-  background: var(--card); border:1px solid var(--border); border-radius: var(--radius-xl);
-  padding:30px; box-shadow: var(--shadow-base);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 30px; 
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s ease;
 }
-h1 { margin:0 0 5px; font-size:1.5rem; font-weight:800; }
-.subtitle { margin:0 0 25px; font-size:0.9rem; color:var(--muted); line-height:1.6; }
-.field { margin-bottom:16px; position:relative; }
-label { display:block; margin-bottom:5px; font-size:0.85rem; color:var(--text); font-weight:500; }
+
+/* عناوین */
+h1 { margin: 0 0 5px; font-size: 1.5rem; font-weight: 800; }
+.subtitle { margin: 0 0 25px; font-size: 0.9rem; color: var(--muted); line-height: 1.6;}
+
+/* فیلدهای فرم */
+fieldset { border: none; padding: 0; margin: 0 0 20px; }
+.field { margin-bottom: 16px; position: relative; }
+label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--muted); font-weight: 500;}
+
+/* ورودی های نئونی */
 .input {
-  width:100%; padding:12px 15px; border-radius: var(--radius-lg); border:1px solid var(--border);
-  background: var(--surface); color: var(--text); font-size:1rem; outline:none; transition:0.2s; text-align:right; direction:ltr;
+  width: 100%;
+  padding: 12px 15px; 
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--surface); /* ضخامت بیشتر برای حس بهتر */
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  direction: ltr; 
+  text-align: right;
 }
-.input:focus { border-color: var(--primary); box-shadow:0 0 0 3px var(--primary-soft); }
-.input.disabled { opacity:0.6; cursor:not-allowed; background:#0f172a; }
-.row { display:flex; justify-content:space-between; align-items:center; margin-top:10px;}
-.switch { display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; font-size:0.8rem; color:var(--muted);}
-.toggle { width:44px; height:22px; background:#374151; border-radius:999px; position:relative; transition:0.3s;}
-.toggle::after { content:''; width:18px; height:18px; background:#fff; border-radius:50%; position:absolute; top:2px; right:2px; transition:0.3s;}
-.switch input:checked + .toggle { background: var(--success); }
-.switch input:checked + .toggle::after { transform: translateX(-22px);}
+.input:focus { 
+  border-color: var(--primary); 
+  box-shadow: 0 0 0 1px var(--primary), 0 0 10px var(--primary-glow); /* نئون گِلو */
+}
+.input.disabled { opacity: 0.5; cursor: not-allowed; background: #0b111d; }
+
+/* ---------------------------------- */
+/* استایل چک‌باکس مدرن SVG (درخواست کاربر) */
+/* ---------------------------------- */
+.switch { /* اسم کلاس اصلی ما switch است */
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    cursor: pointer; 
+    user-select: none; 
+    font-size: 0.8rem; 
+    color: var(--muted);
+    
+    padding: 5px; 
+    border-radius: var(--radius-lg);
+}
+
+.switch input {
+    display: none;
+}
+
+.switch svg {
+    overflow: visible;
+    width: 24px; 
+    height: 24px;
+    margin-left: 5px; 
+}
+
+.path {
+    fill: none;
+    stroke: var(--muted); /* رنگ خاموش */
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+    stroke-dasharray: 241 9999999;
+    stroke-dashoffset: 0;
+}
+
+.switch input:checked ~ svg .path {
+    stroke: var(--success); /* رنگ روشن و جذاب هنگام انتخاب */
+    stroke-dasharray: 70.5096664428711 9999999;
+    stroke-dashoffset: -262.2723388671875;
+}
+/* ---------------------------------- */
+
+
+/* دکمه اصلی (Glow Button) */
 .btn {
-  width:100%; padding:14px; border-radius: var(--radius-lg); border:none;
-  background: linear-gradient(45deg, var(--primary), #d59aff); color:#fff; font-size:1rem; font-weight:700;
-  cursor:pointer; margin-top:20px; transition:0.2s; box-shadow:0 10px 20px var(--primary-soft);
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--radius-lg);
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px var(--primary-glow);
 }
-.btn:hover { transform:translateY(-1px); box-shadow:0 15px 30px var(--primary-soft);}
-.btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none;}
-.alert {
-  margin-top:25px; padding:15px; border-radius: var(--radius-lg); display:flex; gap:10px; align-items:center; font-size:0.85rem; font-weight:500;
+.btn:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px var(--primary); 
+  filter: brightness(1.1);
 }
-.alert.error { background: rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#fecaca;}
-.alert.success { background: rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); color:var(--success);
-flex-direction:column; align-items:center; text-align:center;}
-.alert .icon { width:18px; height:18px; min-width:18px;}
-.deposit { font-size:1.8rem; font-weight:800; letter-spacing:2px; margin:10px 0; color:var(--success); text-align:center; user-select:all;}
-.copy-area { display:flex; justify-content:center;}
-.copy-btn { padding:8px 15px; border-radius:8px; border:none; background:var(--primary-soft); color:var(--text); font-size:0.8rem; cursor:pointer; transition:0.2s; font-weight:500;}
-.copy-btn:hover { background: rgba(168,85,247,0.35); }
-.field.is-error .input { border-color: var(--danger)!important; box-shadow:0 0 0 3px rgba(239,68,68,0.2)!important;}
-.validation-message { margin-top:5px; font-size:0.7rem; color:var(--danger); display:none; padding-right:2px;}
-.field.is-error .validation-message { display:block;}
-@media(max-width:480px){.card{padding:25px;} h1{font-size:1.4rem;}}
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; filter: none;}
+
+/* پیام های وضعیت (Alerts) */
+.alert { 
+  margin-top: 25px; 
+  padding: 15px; 
+  border-radius: var(--radius-lg); 
+  display: flex; 
+  gap: 10px; 
+  align-items: center; 
+  font-size: 0.85rem; 
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.alert .icon { width: 18px; height: 18px; min-width: 18px;}
+
+.alert.error { background: rgba(248, 113, 113, 0.1); border: 1px solid var(--danger); color: var(--danger); }
+.alert.success { 
+  background: var(--card); /* رنگ کارت برای عمق بیشتر */
+  border: 1px solid var(--success);
+  color: var(--success);
+  box-shadow: 0 0 15px var(--success-glow); /* جلوه نئونی موفقیت */
+  flex-direction: column; 
+  align-items: center; 
+  text-align: center;
+}
+
+/* نمایش شناسه */
+.deposit { 
+  font-size: 1.8rem; 
+  font-weight: 900; 
+  letter-spacing: 2px; 
+  margin: 10px 0 10px; 
+  color: var(--success); 
+  direction: ltr; 
+  text-align: center;
+  text-shadow: 0 0 8px var(--success-glow); /* Text Glow */
+}
+
+/* دکمه کپی (شیک و کوچک) */
+.copy-area { display: flex; justify-content: center;}
+.copy-btn { 
+  padding: 8px 15px; 
+  border-radius: 8px; 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  background: var(--surface);
+  color: var(--text); 
+  font-size: 0.8rem; 
+  cursor: pointer; 
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+.copy-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--primary);}
+.copy-btn svg { width: 14px; height: 14px; margin-left: 5px; vertical-align: middle;}
+
+/* خطای اعتبار سنجی */
+.field.is-error .input { 
+  border-color: var(--danger) !important; 
+  box-shadow: 0 0 0 1px var(--danger), 0 0 5px rgba(248, 113, 113, 0.4) !important; /* جلوه خطای نئونی */
+}
+.validation-message { margin-top: 5px; font-size: 0.7rem; color: var(--danger); display: none; padding-right: 2px;}
+.field.is-error .validation-message { display: block;}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="card">
+<div class="card">
     <h1>تولید شناسه واریز</h1>
-    <p class="subtitle">ابزاری سریع و دقیق. اطلاعات مورد نیاز را وارد نمایید تا شناسه نهایی تولید و ثبت گردد.</p>
+    <p class="subtitle">سیستم پیشرفته تولید و ثبت شناسه مالی. با ورود اطلاعات ضروری، شناسه مورد نظر را دریافت کنید.</p>
 
     <form id="depositForm" onsubmit="event.preventDefault(); generateId();">
-      <div class="field">
-        <label for="username">نام کاربری (اختیاری)</label>
-        <input id="username" class="input" placeholder="جهت ثبت در گزارش‌های سیستمی" type="text" autocomplete="off">
-      </div>
-      <div class="field" id="nationalCodeField">
-        <label for="nationalCode">کد ملی (۱۰ رقم)</label>
-        <input id="nationalCode" class="input" type="tel" maxlength="10" placeholder="۱۰ رقم بدون فاصله" required autocomplete="off">
-        <div class="validation-message">❌ کد ملی باید دقیقاً ۱۰ رقمی باشد.</div>
-      </div>
-      <div class="field">
-        <label>تعداد اکانت</label>
-        <div class="row">
-          <label class="switch" for="defaultAccount">
-            <input id="defaultAccount" type="checkbox" checked>
-            <span class="toggle"></span>
-            <span class="switch-text">تنظیم پیش‌فرض (یک اکانت)</span>
-          </label>
-          <input id="accountCount" class="input disabled" type="tel" value="1" min="1" disabled>
-        </div>
-      </div>
-      <button type="submit" id="generateBtn" class="btn" disabled>ساخت شناسه و ثبت در سیستم</button>
+        <fieldset>
+            <div class="field">
+                <label for="username">نام کاربری (اختیاری)</label>
+                <input id="username" class="input" placeholder="جهت ثبت در گزارش‌های سیستمی" type="text" autocomplete="off">
+            </div>
+
+            <div class="field" id="nationalCodeField">
+                <label for="nationalCode">کد ملی (۱۰ رقم)</label>
+                <input id="nationalCode" class="input" type="tel" maxlength="10" placeholder="۱۰ رقم بدون فاصله" required autocomplete="off">
+                <div class="validation-message">❌ کد ملی باید دقیقاً ۱۰ رقمی باشد.</div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <div class="field">
+                <label>تعداد اکانت</label>
+                <div class="row">
+                    <label class="switch" for="defaultAccount">
+                        <input id="defaultAccount" type="checkbox" checked>
+                        
+                        <svg viewBox="0 0 64 64">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" class="path"></path>
+                        </svg>
+                        <span class="switch-text">یک اکانت (پیش‌فرض)</span>
+                    </label>
+                    
+                    <input id="accountCount" class="input disabled" type="tel" value="1" min="1" disabled aria-label="تعداد اکانت">
+                </div>
+            </div>
+        </fieldset>
+        
+        <button type="submit" id="generateBtn" class="btn" disabled>
+            ساخت شناسه و ثبت خودکار
+        </button>
     </form>
 
     <div id="alert"></div>
-  </div>
+</div>
 </div>
 
-<form id="gsheetForm" action="https://script.google.com/macros/s/AKfycbxKyJYiM84nqfu7UDt5BlD3kkPS6eIExhvQx88YNG6rd2EMW8y_bj1sQIZkgxlGFoVfA/exec" method="post" target="hidden_iframe">
-  <input type="hidden" name="data" id="formData">
+<form id="gsheetForm" action="https://script.google.com/macros/s/AKfycbxOjhrFrzDBfZMG97sk1iDtrbA2PWQ92Z6T_9cbimxOf944_DFNX2tAQgB8Hvo--y8Y/exec" method="post" target="hidden_iframe">
+  <input type="hidden" name="data" id="formData">
 </form>
 <iframe name="hidden_iframe" style="display:none;"></iframe>
 
-<svg style="display:none;">
-  <symbol id="icon-error" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></symbol>
-  <symbol id="icon-success" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></symbol>
-  <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></symbol>
+<svg style="display: none;">
+    <symbol id="icon-error" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></symbol>
+    <symbol id="icon-success" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></symbol>
 </svg>
 
 <script>
@@ -125,6 +271,7 @@ const alertBox = document.getElementById('alert');
 const nationalCodeField = document.getElementById('nationalCodeField');
 const generateBtn = document.getElementById('generateBtn');
 
+// 1. منطق Disable/Enable کردن تعداد اکانت
 checkbox.addEventListener('change', () => {
     const disabled = checkbox.checked;
     accountInput.disabled = disabled;
@@ -133,76 +280,103 @@ checkbox.addEventListener('change', () => {
     validateForm();
 });
 
+// 2. اعتبار سنجی همزمان (Real-time Validation) و مدیریت وضعیت دکمه
 nationalCodeInput.addEventListener('input', validateForm);
 accountInput.addEventListener('input', validateForm);
 
 function validateForm() {
     const codeValue = nationalCodeInput.value.trim();
     const countValue = accountInput.value.trim();
+    
+    // الف) بررسی ۱۰ رقمی بودن کد ملی
     const isCodeValid = /^\d{10}$/.test(codeValue);
+    
+    // ب) بررسی خالی نبودن تعداد اکانت در صورت فعال بودن
     const isCountValid = accountInput.disabled || (countValue !== '' && parseInt(countValue) > 0);
+
+    // مدیریت کلاس خطا برای فیلد کد ملی
     nationalCodeField.classList.toggle('is-error', codeValue.length > 0 && !isCodeValid);
+
+    // فعال/غیرفعال کردن دکمه اصلی
     const isFormValid = isCodeValid && isCountValid;
     generateBtn.disabled = !isFormValid;
+    
     return isFormValid;
 }
 
+// 3. نمایش پیام‌ها (با آیکون)
 function showAlert(type, message, depositId = null) {
-    let iconId = type==='error'?'icon-error':'icon-success';
-    if(type==='success' && depositId){
+    let iconId = type === 'error' ? 'icon-error' : 'icon-success';
+    
+    if (type === 'success' && depositId) {
         alertBox.innerHTML = `
             <div class="alert success">
-                <svg class="icon"><use xlink:href="#icon-success"></use></svg>
+                <svg class="icon" aria-hidden="true"><use xlink:href="#icon-success"></use></svg>
                 <span>شناسه واریز با موفقیت ساخته و ثبت شد.</span>
                 <div class="deposit">${depositId}</div>
                 <div class="copy-area">
-                    <button class="copy-btn" onclick="copyId('${depositId}')">
+                    <button class="copy-btn" onclick="copyId('${depositId}')" aria-label="کپی شناسه واریز">
                         کپی شناسه <svg><use xlink:href="#icon-copy"></use></svg>
                     </button>
                 </div>
             </div>
         `;
     } else {
-        alertBox.innerHTML = `
+         alertBox.innerHTML = `
             <div class="alert ${type}">
-                <svg class="icon"><use xlink:href="#${iconId}"></use></svg>
+                <svg class="icon" aria-hidden="true"><use xlink:href="#${iconId}"></use></svg>
                 <span>${message}</span>
             </div>
         `;
     }
 }
 
-function copyId(val){
+function copyId(val) {
     navigator.clipboard.writeText(val);
     const copyMessage = document.createElement('div');
-    copyMessage.className='alert success';
-    copyMessage.style.cssText='margin-top:10px;padding:8px 12px;font-size:0.7rem;font-weight:400;justify-content:center;';
-    copyMessage.innerHTML='✅ شناسه در حافظه کپی شد!';
+    copyMessage.className = 'alert success';
+    copyMessage.style.cssText = 'margin-top: 10px; padding: 8px 12px; font-size: 0.7rem; font-weight: 400; justify-content: center; border-color: var(--success);';
+    copyMessage.innerHTML = '✅ شناسه در حافظه کپی شد!';
     alertBox.appendChild(copyMessage);
-    setTimeout(()=>{copyMessage.remove();},2000);
+    
+    setTimeout(() => {
+        copyMessage.remove();
+    }, 2000); 
 }
 
-function sendToSheet(username,nationalCode,depositId){
-  const payload = JSON.stringify({username,nationalCode,depositId,createdAt:new Date().toISOString()});
-  document.getElementById('formData').value = payload;
-  document.getElementById('gsheetForm').submit();
+// 4. تابع ارسال به گوگل شیت
+function sendToSheet(username, nationalCode, depositId) {
+    const payload = JSON.stringify({
+        username: username,
+        nationalCode: nationalCode,
+        depositId: depositId
+    });
+    document.getElementById('formData').value = payload;
+    document.getElementById('gsheetForm').submit();
 }
 
-function generateId(){
-    alertBox.innerHTML='';
-    if(!validateForm()){
-        showAlert('error','❗ لطفا کد ملی ۱۰ رقمی و صحیح را وارد کنید.');
-        return;
-    }
-    const nationalCode=nationalCodeInput.value.trim();
-    const count=accountInput.value;
-    const username=document.getElementById('username').value.trim()||'-';
-    const depositId=count+nationalCode.substring(2);
-    showAlert('success','شناسه ساخته شد',depositId);
-    sendToSheet(username,nationalCode,depositId);
+// 5. تابع اصلی تولید شناسه
+function generateId() {
+    alertBox.innerHTML = ''; 
+
+    if (!validateForm()) {
+        showAlert('error', '❗ لطفا کد ملی ۱۰ رقمی و صحیح را وارد کنید.');
+        return;
+    }
+
+    const nationalCode = nationalCodeInput.value.trim();
+    const count = accountInput.value;
+    const username = document.getElementById('username').value.trim() || '-';
+  
+    const depositId = count + nationalCode.substring(2);
+
+    // نمایش شناسه موفقیت آمیز و ارسال دیتا
+    showAlert('success', 'شناسه ساخته شد', depositId);
+    sendToSheet(username, nationalCode, depositId);
 }
 
-document.addEventListener('DOMContentLoaded',validateForm);
+// اجرای اولیه برای تنظیم وضعیت دکمه در زمان بارگذاری
+document.addEventListener('DOMContentLoaded', validateForm);
 </script>
 </body>
 </html>
