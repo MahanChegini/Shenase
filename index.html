@@ -61,7 +61,9 @@ fieldset { border: none; padding: 0; margin: 0 0 20px; }
 .field { position: relative; margin-bottom: 25px; width: 100%; }
 label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--muted); font-weight: 500;}
 
-/* استایل ورودی‌ها (Neumorphism) */
+/* ---------------------------------- */
+/* استایل ورودی‌ها (Neumorphism) - کاملاً صحیح */
+/* ---------------------------------- */
 .field .input {
     border: none; outline: none; border-radius: var(--radius-lg);
     padding: 1em; background-color: var(--card);
@@ -77,119 +79,78 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 .field.is-error .input { 
     box-shadow: inset 0 0 0 2px var(--danger), inset 3px 3px 6px var(--neum-dark-shadow); 
 }
+#accountCount {
+    box-shadow: inset 3px 3px 6px var(--neum-dark-shadow), inset -3px -3px 6px var(--neum-light-shadow);
+    background: #0b111d !important;
+    color: var(--muted) !important;
+    opacity: 0.8 !important;
+    cursor: not-allowed;
+    text-align: right !important;
+}
 
 /* ---------------------------------- */
-/* استایل لودینگ سه‌بعدی (3D Boxes) */
+/* دکمه اصلی (Glow Button) - کاملاً صحیح */
+/* ---------------------------------- */
+.btn {
+  width: 100%; padding: 15px; border-radius: var(--radius-lg); border: none; background: var(--primary);
+  color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 25px; transition: all 0.3s ease;
+  box-shadow: 0 5px 20px var(--primary-glow);
+}
+.btn:hover { 
+  transform: translateY(-2px); box-shadow: 0 8px 30px var(--primary-glow), 0 0 20px var(--primary); 
+  filter: brightness(1.1);
+}
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; filter: none;}
+
+
+/* ---------------------------------- */
+/* لودینگ سه‌بعدی (3D Boxes) - حفظ شده */
 /* ---------------------------------- */
 #loadingOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(6, 8, 20, 0.9); /* BG تیره با شفافیت */
-    border-radius: var(--radius-xl);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(6, 8, 20, 0.9); border-radius: var(--radius-xl);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 10; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-
-#loadingOverlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.loading-text {
-    color: var(--primary);
-    margin-top: 10px;
-    font-size: 0.9rem;
-}
-
+#loadingOverlay.active { opacity: 1; visibility: visible; }
+.loading-text { color: var(--primary); margin-top: 10px; font-size: 0.9rem; }
 .boxes {
-    --size: 24px; /* سایز کوچکتر برای زیبایی */
-    --duration: 800ms;
-    height: calc(var(--size) * 2);
-    width: calc(var(--size) * 3);
-    position: relative;
-    transform-style: preserve-3d;
-    transform-origin: 50% 50%;
+    --size: 24px; --duration: 800ms;
+    height: calc(var(--size) * 2); width: calc(var(--size) * 3);
+    position: relative; transform-style: preserve-3d; transform-origin: 50% 50%;
     margin-top: calc(var(--size) * 1.5 * -1);
     transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
 }
-
-.boxes .box {
-    width: var(--size);
-    height: var(--size);
-    top: 0;
-    left: 0;
-    position: absolute;
-    transform-style: preserve-3d;
-}
-
-.boxes .box:nth-child(1) {
-    transform: translate(100%, 0);
-    -webkit-animation: box1 var(--duration) linear infinite;
-    animation: box1 var(--duration) linear infinite;
-}
-
-.boxes .box:nth-child(2) {
-    transform: translate(0, 100%);
-    -webkit-animation: box2 var(--duration) linear infinite;
-    animation: box2 var(--duration) linear infinite;
-}
-
-.boxes .box:nth-child(3) {
-    transform: translate(100%, 100%);
-    -webkit-animation: box3 var(--duration) linear infinite;
-    animation: box3 var(--duration) linear infinite;
-}
-
-.boxes .box:nth-child(4) {
-    transform: translate(200%, 0);
-    -webkit-animation: box4 var(--duration) linear infinite;
-    animation: box4 var(--duration) linear infinite;
-}
-
+.boxes .box { width: var(--size); height: var(--size); top: 0; left: 0; position: absolute; transform-style: preserve-3d; }
+.boxes .box:nth-child(1) { transform: translate(100%, 0); animation: box1 var(--duration) linear infinite; }
+.boxes .box:nth-child(2) { transform: translate(0, 100%); animation: box2 var(--duration) linear infinite; }
+.boxes .box:nth-child(3) { transform: translate(100%, 100%); animation: box3 var(--duration) linear infinite; }
+.boxes .box:nth-child(4) { transform: translate(200%, 0); animation: box4 var(--duration) linear infinite; }
 .boxes .box > div {
-    --background: var(--loading-color-1); /* بنفش اصلی */
-    --top: auto; --right: auto; --bottom: auto; --left: auto;
-    --translateZ: calc(var(--size) / 2);
-    --rotateY: 0deg; --rotateX: 0deg;
-    position: absolute;
-    width: 100%; height: 100%;
-    background: var(--background);
-    top: var(--top); right: var(--right); bottom: var(--bottom); left: var(--left);
+    --background: var(--loading-color-1); --top: auto; --right: auto; --bottom: auto; --left: auto;
+    --translateZ: calc(var(--size) / 2); --rotateY: 0deg; --rotateX: 0deg;
+    position: absolute; width: 100%; height: 100%;
+    background: var(--background); top: var(--top); right: var(--right); bottom: var(--bottom); left: var(--left);
     transform: rotateY(var(--rotateY)) rotateX(var(--rotateX)) translateZ(var(--translateZ));
 }
-
 .boxes .box > div:nth-child(1) { --top: 0; --left: 0; }
 .boxes .box > div:nth-child(2) { --background: var(--loading-color-2); --right: 0; --rotateY: 90deg; }
 .boxes .box > div:nth-child(3) { --background: var(--loading-color-3); --rotateX: -90deg; }
 .boxes .box > div:nth-child(4) { --background: var(--loading-color-4); --top: 0; --left: 0; --translateZ: calc(var(--size) * 3 * -1); }
-
-@-webkit-keyframes box1 { 0%, 50% { transform: translate(100%, 0); } 100% { transform: translate(200%, 0); } }
 @keyframes box1 { 0%, 50% { transform: translate(100%, 0); } 100% { transform: translate(200%, 0); } }
-@-webkit-keyframes box2 { 0% { transform: translate(0, 100%); } 50% { transform: translate(0, 0); } 100% { transform: translate(100%, 0); } }
 @keyframes box2 { 0% { transform: translate(0, 100%); } 50% { transform: translate(0, 0); } 100% { transform: translate(100%, 0); } }
-@-webkit-keyframes box3 { 0%, 50% { transform: translate(100%, 100%); } 100% { transform: translate(0, 100%); } }
 @keyframes box3 { 0%, 50% { transform: translate(100%, 100%); } 100% { transform: translate(0, 100%); } }
-@-webkit-keyframes box4 { 0% { transform: translate(200%, 0); } 50% { transform: translate(200%, 100%); } 100% { transform: translate(100%, 100%); } }
 @keyframes box4 { 0% { transform: translate(200%, 0); } 50% { transform: translate(200%, 100%); } 100% { transform: translate(100%, 100%); } }
 
 /* ---------------------------------- */
-/* دکمه کپی اصلاح شده (مینیمال و شیک) */
+/* دکمه کپی اصلاح شده و شیک */
 /* ---------------------------------- */
 .copy-area { display: flex; justify-content: center; margin-top: 15px; }
 .copy-btn { 
   padding: 8px 15px; 
   border-radius: 8px; 
-  border: 1px solid var(--success); /* مرز سبز نئونی */
-  background: none; /* پس زمینه شفاف */
+  border: 1px solid var(--success); 
+  background: none; 
   color: var(--success); 
   font-size: 0.85rem; 
   cursor: pointer; 
@@ -199,9 +160,15 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
   align-items: center;
 }
 .copy-btn:hover { background: rgba(16, 185, 129, 0.1); }
-.copy-btn svg { width: 16px; height: 16px; margin-right: 5px; fill: var(--success);} /* آیکون بزرگتر */
+.copy-btn svg { 
+    width: 16px; /* اندازه کوچک و استاندارد */ 
+    height: 16px; 
+    margin-right: 5px; 
+    fill: var(--success);
+    transition: none; /* جلوگیری از تغییر اندازه ناخواسته */
+}
 
-/* بقیه استایل ها (سوئیچ و ... بدون تغییر) */
+/* بقیه استایل ها */
 .validation-message { margin-top: 5px; font-size: 0.7rem; color: var(--danger); display: none; padding-right: 2px;}
 .field.is-error .validation-message { display: block;}
 .deposit { 
@@ -222,6 +189,7 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
         </div>
         <div class="loading-text">در حال تولید و ثبت شناسه...</div>
     </div>
+
     <h1>تولید شناسه واریز</h1>
     <p class="subtitle">سیستم پیشرفته تولید و ثبت شناسه مالی. اطلاعات ضروری را وارد کنید.</p>
 
@@ -274,7 +242,9 @@ label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--mut
 <svg style="display: none;">
     <symbol id="icon-error" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></symbol>
     <symbol id="icon-success" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></symbol>
-    <symbol id="icon-copy" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+    </symbol>
 </svg>
 
 <script>
@@ -286,7 +256,7 @@ const nationalCodeField = document.getElementById('nationalCodeField');
 const generateBtn = document.getElementById('generateBtn');
 const loadingOverlay = document.getElementById('loadingOverlay');
 
-// 1. منطق Disable/Enable کردن تعداد اکانت (بدون تغییر)
+// 1. منطق Disable/Enable کردن تعداد اکانت
 checkbox.addEventListener('change', () => {
     const disabled = checkbox.checked;
     accountInput.disabled = disabled;
@@ -295,7 +265,7 @@ checkbox.addEventListener('change', () => {
     validateForm();
 });
 
-// 2. اعتبار سنجی همزمان (بدون تغییر)
+// 2. اعتبار سنجی همزمان
 nationalCodeInput.addEventListener('input', validateForm);
 accountInput.addEventListener('input', validateForm);
 document.getElementById('username').addEventListener('input', () => {}); 
@@ -315,7 +285,7 @@ function validateForm() {
     return isFormValid;
 }
 
-// 3. نمایش پیام‌ها (با دکمه کپی جدید)
+// 3. نمایش پیام‌ها (با دکمه کپی اصلاح شده)
 function showAlert(type, message, depositId = null) {
     let iconId = type === 'error' ? 'icon-error' : 'icon-success';
     
@@ -346,7 +316,8 @@ function copyId(val) {
     navigator.clipboard.writeText(val);
     const copyMessage = document.createElement('div');
     copyMessage.className = 'alert success';
-    copyMessage.style.cssText = 'margin-top: 10px; padding: 8px 12px; font-size: 0.7rem; font-weight: 400; justify-content: center; border: none; box-shadow: none;';
+    // استایل موقت برای پیام کپی شدن
+    copyMessage.style.cssText = 'margin-top: 10px; padding: 8px 12px; font-size: 0.7rem; font-weight: 400; justify-content: center; border: 1px solid var(--success); box-shadow: 0 0 10px var(--success-glow);';
     copyMessage.innerHTML = '✅ شناسه در حافظه کپی شد!';
     alertBox.appendChild(copyMessage);
     
@@ -366,7 +337,7 @@ function sendToSheet(username, nationalCode, depositId) {
     document.getElementById('gsheetForm').submit();
 }
 
-// 5. تابع اصلی تولید شناسه (با لودینگ جدید)
+// 5. تابع اصلی تولید شناسه (با لودینگ)
 function generateId() {
     alertBox.innerHTML = ''; 
 
@@ -393,7 +364,7 @@ function generateId() {
         // غیرفعال کردن لودینگ
         loadingOverlay.classList.remove('active');
 
-    }, 1500); // 1.5 ثانیه زمان برای لودینگ
+    }, 1500); 
 }
 
 // اجرای اولیه
